@@ -1,15 +1,41 @@
-## Put comments here that give an overall description of what your
-## functions do
+## 
+## 1st commit SHA-1 hash identifier: 
 
-## Write a short comment describing this function
+
+##This function creates a special "matrix" object that can cache its inverse.
 
 makeCacheMatrix <- function(x = matrix()) {
-
+        t <- NULL
+        set <- function(y) {
+                x <<- y
+                t <<- NULL
+        }
+        get <- function() x
+        setInverse <- function(inverse) t <<- inverse
+        getInverse <- function() t
+        list(set = set,
+             get = get,
+             setInverse = setInverse,
+             getInverse = getInverse)
 }
 
 
-## Write a short comment describing this function
+## This function computes the inverse of the special "matrix"  
+## which created with the makeCacheMatrix function.
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+        
+        t <- x$getInverse()
+        if (!is.null(t)) {
+                message("in process")
+                return(t)
+        }
+        m <- x$get()
+        t <- solve(m, ...)
+        x$setInverse(t)
+        t
 }
+
+## Testing
+matrix <- makeCacheMatrix(matrix(1:4, 2, 2))
+cacheSolve(matrix)
